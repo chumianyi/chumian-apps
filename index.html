@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>初眠de安卓软件集</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0f0f1a;
+    --bg-card: #1a1a2e;
+    --bg-card-hover: #222240;
+    --accent: #6c5ce7;
+    --accent2: #a29bfe;
+    --text: #e0e0e0;
+    --text-dim: #8888aa;
+    --border: #2a2a4a;
+    --tag-apk: #00b894;
+    --tag-exe: #e17055;
+    --tag-bpk: #fdcb6e;
+    --tag-game: #e84393;
+    --tag-tool: #0984e3;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(108,92,231,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(232,67,147,0.1) 0%, transparent 50%);
+  }
+  .header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    position: relative;
+  }
+  .header h1 {
+    font-size: 2.8em;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent2), var(--accent), #e84393);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+  .header p {
+    color: var(--text-dim);
+    font-size: 1.1em;
+  }
+  .header .count {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 18px;
+    background: rgba(108,92,231,0.15);
+    border: 1px solid rgba(108,92,231,0.3);
+    border-radius: 20px;
+    font-size: 0.9em;
+    color: var(--accent2);
+  }
+  .search-bar {
+    max-width: 500px;
+    margin: 0 auto 30px;
+    padding: 0 20px;
+  }
+  .search-bar input {
+    width: 100%;
+    padding: 14px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .search-bar input:focus {
+    border-color: var(--accent);
+  }
+  .search-bar input::placeholder { color: var(--text-dim); }
+  .filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 40px;
+    padding: 0 20px;
+  }
+  .filter-btn {
+    padding: 8px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+  .category-title {
+    font-size: 1.4em;
+    font-weight: 700;
+    margin: 40px 0 20px;
+    padding-left: 14px;
+    border-left: 4px solid var(--accent);
+    color: var(--accent2);
+  }
+  .category-title:first-child { margin-top: 0; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    background: var(--bg-card-hover);
+    box-shadow: 0 12px 40px rgba(108,92,231,0.2);
+  }
+  .card:hover::before { opacity: 1; }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .app-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6em;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(108,92,231,0.2), rgba(232,67,147,0.15));
+  }
+  .app-info h3 {
+    font-size: 1.1em;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .app-info .version {
+    font-size: 0.8em;
+    color: var(--text-dim);
+  }
+  .app-desc {
+    font-size: 0.9em;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    min-height: 44px;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .tag {
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    font-weight: 600;
+  }
+  .tag-apk { background: rgba(0,184,148,0.15); color: var(--tag-apk); }
+  .tag-exe { background: rgba(225,112,85,0.15); color: var(--tag-exe); }
+  .tag-bpk { background: rgba(253,203,110,0.15); color: var(--tag-bpk); }
+  .tag-game { background: rgba(232,67,147,0.15); color: var(--tag-game); }
+  .tag-tool { background: rgba(9,132,227,0.15); color: var(--tag-tool); }
+  .tag-size { background: rgba(136,136,170,0.15); color: var(--text-dim); }
+  .download-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--accent), #8b7cf6);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .download-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(108,92,231,0.4);
+  }
+  .download-btn.secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+  .download-btn.secondary:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-dim);
+    font-size: 0.85em;
+    border-top: 1px solid var(--border);
+  }
+  .footer a { color: var(--accent2); text-decoration: none; }
+  .no-result {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+    font-size: 1.1em;
+  }
+  @media (max-width: 600px) {
+    .header h1 { font-size: 2em; }
+    .grid { grid-template-columns: 1fr; }
+    .container { padding: 0 16px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>初眠de安卓软件集</h1>
+  <p>精心整理的安卓应用与游戏合集，全部免费下载</p>
+  <div class="count" id="appCount">共 0 款应用</div>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="搜索应用名称..." oninput="filterApps()">
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="setFilter('all', this)">全部</button>
+  <button class="filter-btn" onclick="setFilter('apk', this)">安卓 APK</button>
+  <button class="filter-btn" onclick="setFilter('exe', this)">Windows</button>
+  <button class="filter-btn" onclick="setFilter('bpk', this)">BPK 包</button>
+  <button class="filter-btn" onclick="setFilter('game', this)">游戏</button>
+  <button class="filter-btn" onclick="setFilter('tool', this)">工具</button>
+</div>
+
+<div class="container" id="appContainer"></div>
+
+<div class="footer">
+  <p>初眠de安卓软件集 &copy; 2026 | 所有应用均来自互联网公开资源，仅供学习交流</p>
+</div>
+
+<script>
+const apps = [
+  // ===== 游戏 =====
+  {
+    name: "星月之约",
+    icon: "🌙",
+    desc: "3D视觉错觉解谜游戏，Flutter外壳+Godot引擎，210关手工设计关卡，月夜星空美术风格。",
+    version: "v1.0.2",
+    size: "126.7MB",
+    type: "apk",
+    category: "game",
+    url: "https://aka.doubaocdn.com/s/KYQ5UiM3cs"
+  },
+  {
+    name: "萌萌斗地主",
+    icon: "🃏",
+    desc: "可爱风格斗地主游戏，支持单机对战，精美UI与流畅动画体验。",
+    version: "v1.0",
+    size: "",
+    type: "apk",
+    category: "game",
+    url: "https://aka.doubaocdn.com/s/i3tKl88k0Y"
+  },
+  // ===== 桌面宠物 =====
+  {
+    name: "可爱桌宠",
+    icon: "🐱",
+    desc: "初音未来Q版桌面宠物，支持拖动、点击互动、待机动画，悬浮窗置顶显示。",
+    version: "Android版",
+    size: "",
+    type: "apk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/o2lf2v8oPo"
+  },
+  {
+    name: "猫猫 Live2D",
+    icon: "😺",
+    desc: "Live2D猫猫桌宠应用，标准模式，支持多种表情与动作交互。",
+    version: "arm64-v8a",
+    size: "",
+    type: "apk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/FNHpsRqeJt"
+  },
+  {
+    name: "可爱桌宠",
+    icon: "💻",
+    desc: "Windows桌面宠物安装程序，标准安装向导，支持自定义安装路径，安装后即可运行。",
+    version: "标准向导版",
+    size: "",
+    type: "exe",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/UKePPUAlcH"
+  },
+  {
+    name: "可爱桌宠",
+    icon: "📦",
+    desc: "Windows桌面宠物零依赖版，无需运行库，解压即用，适合精简系统环境。",
+    version: "零依赖版",
+    size: "",
+    type: "exe",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/9ZmT5Mt7uU"
+  },
+  // ===== 浏览器与视频 =====
+  {
+    name: "OldBrowser",
+    icon: "🌐",
+    desc: "怀旧风格老浏览器，支持多标签页、书签管理，轻量快速，Universal架构兼容。",
+    version: "v1.1",
+    size: "",
+    type: "apk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/PpVKy89boU"
+  },
+  {
+    name: "OldBrowser",
+    icon: "📦",
+    desc: "老浏览器BPK安装包，适用于支持BPK格式的设备，v1.1最终修复版。",
+    version: "v1.1 BPK",
+    size: "",
+    type: "bpk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/EW2MV37q9W"
+  },
+  {
+    name: "Hi！bili",
+    icon: "📺",
+    desc: "B站第三方客户端，修复播放闪退问题，支持多模式播放切换，流畅观看视频。",
+    version: "v2.0.0 修复版",
+    size: "",
+    type: "apk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/1rvVknVpbx"
+  },
+  {
+    name: "Hi！bili",
+    icon: "📦",
+    desc: "B站客户端BPK安装包，v2.0.0闪退修复版，适用于BPK格式设备。",
+    version: "v2.0.0 BPK",
+    size: "",
+    type: "bpk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/p7qpRQ19XB"
+  },
+  {
+    name: "哔哩经典",
+    icon: "📼",
+    desc: "B站经典版客户端修改版，已签名可直接安装，怀旧界面与简洁体验。",
+    version: "v0.4.11",
+    size: "",
+    type: "apk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/C21sb5W7mU"
+  },
+  {
+    name: "哔哩经典",
+    icon: "📦",
+    desc: "B站经典原版BPK安装包，v0.4.11版本，适用于BPK格式设备。",
+    version: "v0.4.11 BPK",
+    size: "",
+    type: "bpk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/Z6aTD1BN2Z"
+  },
+  // ===== 系统工具 =====
+  {
+    name: "安全护盾",
+    icon: "🛡️",
+    desc: "安卓杀毒安全软件，闪退修复版，提供病毒扫描、应用管理、安全防护功能。",
+    version: "v1.0.1",
+    size: "",
+    type: "apk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/mFtnhLLKeu"
+  },
+  {
+    name: "MT管理器",
+    icon: "📁",
+    desc: "强大的安卓文件管理器，支持双窗口操作、APK编辑、脚本执行等高级功能。",
+    version: "BPK版",
+    size: "",
+    type: "bpk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/v3zSlQoGTY"
+  },
+  {
+    name: "MT管理器",
+    icon: "📂",
+    desc: "MT管理器APK转换版，从BPK转换为标准APK格式，可直接安装使用。",
+    version: "APK转换版",
+    size: "",
+    type: "apk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/t7udhhTRPV"
+  },
+  {
+    name: "XiaoChu 流体下载器",
+    icon: "⬇️",
+    desc: "轻量级多线程下载工具，支持流体下载加速，arm64-v8a架构优化。",
+    version: "v1.0",
+    size: "8.3MB",
+    type: "apk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/KuduthJWDf"
+  },
+  {
+    name: "学习中心",
+    icon: "📚",
+    desc: "综合学习工具应用，整合多学科学习资源与练习功能，助力高效学习。",
+    version: "v1.0",
+    size: "",
+    type: "apk",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/d0UOWcLvW3"
+  },
+  // ===== 合集包 =====
+  {
+    name: "老应用合集",
+    icon: "🗂️",
+    desc: "98个经典老安卓应用合集打包，含index.json索引，一次性收藏怀旧应用。",
+    version: "合集包",
+    size: "710MB",
+    type: "zip",
+    category: "tool",
+    url: "https://aka.doubaocdn.com/s/3ihjnJSpX0"
+  }
+];
+
+let currentFilter = 'all';
+
+function getTypeLabel(type) {
+  const map = { apk: 'APK', exe: 'EXE', bpk: 'BPK', zip: 'ZIP' };
+  return map[type] || type.toUpperCase();
+}
+
+function getCategoryLabel(cat) {
+  const map = { game: '游戏', tool: '工具' };
+  return map[cat] || cat;
+}
+
+function renderApps() {
+  const container = document.getElementById('appContainer');
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  
+  let filtered = apps.filter(app => {
+    const matchSearch = app.name.toLowerCase().includes(search) || app.desc.toLowerCase().includes(search);
+    const matchFilter = currentFilter === 'all' || app.type === currentFilter || app.category === currentFilter;
+    return matchSearch && matchFilter;
+  });
+
+  document.getElementById('appCount').textContent = `共 ${filtered.length} 款应用`;
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="no-result">没有找到匹配的应用 😿</div>';
+    return;
+  }
+
+  // Group by category
+  const groups = {};
+  filtered.forEach(app => {
+    const cat = app.category === 'game' ? '🎮 游戏' : '🔧 工具应用';
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(app);
+  });
+
+  let html = '';
+  for (const [cat, catApps] of Object.entries(groups)) {
+    html += `<div class="category-title">${cat}</div>`;
+    html += '<div class="grid">';
+    catApps.forEach(app => {
+      const tags = `<span class="tag tag-${app.type}">${getTypeLabel(app.type)}</span>` +
+        (app.category === 'game' ? `<span class="tag tag-game">游戏</span>` : `<span class="tag tag-tool">工具</span>`) +
+        (app.size ? `<span class="tag tag-size">${app.size}</span>` : '');
+      html += `
+        <div class="card">
+          <div class="card-header">
+            <div class="app-icon">${app.icon}</div>
+            <div class="app-info">
+              <h3>${app.name}</h3>
+              <div class="version">${app.version}</div>
+            </div>
+          </div>
+          <div class="app-desc">${app.desc}</div>
+          <div class="tags">${tags}</div>
+          <a href="${app.url}" target="_blank" rel="noopener" class="download-btn">⬇ 下载 ${getTypeLabel(app.type)}</a>
+        </div>`;
+    });
+    html += '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderApps();
+}
+
+function filterApps() {
+  renderApps();
+}
+
+renderApps();
+</script>
+</body>
+</html>
